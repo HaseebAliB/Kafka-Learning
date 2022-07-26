@@ -1,9 +1,6 @@
 package kafka.course.basics;
 
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -30,6 +27,8 @@ public class ConsumerDemo {
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG,groupId);
         //read from the initial message offset
         properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,"earliest");
+        //rebalancing improvement strategy
+        properties.setProperty(ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG, CooperativeStickyAssignor.class.getName());
 
         //create consumer
         KafkaConsumer<String,String> consumer = new KafkaConsumer<String, String>(properties) ;
@@ -60,7 +59,7 @@ public class ConsumerDemo {
 
             //poll for new Data
             while (true) {
-                log.info("polling data");
+       //         log.info("polling data");
 
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000)); // delay between each poll
 
